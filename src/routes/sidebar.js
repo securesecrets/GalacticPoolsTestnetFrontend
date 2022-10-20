@@ -5,9 +5,10 @@
  * If you're looking to actual Router routes, go to
  * `routes/index.js`
  */
+const base = "/GalacticPoolsTestnetFrontend";
 const routes = [
   {
-    path: "/app/dashboard", // the url
+    path: `${base}/app/dashboard`, // the url
     icon: "HomeIcon", // the component being exported from icons/index.js
     name: "Dashboard", // name that appear in Sidebar
   },
@@ -46,8 +47,9 @@ const routes = [
     name: "Pools",
     // submenu
 
-    path: "/app/pools",
+    path: `${base}/app/pools`, // the url
   },
 ];
+// "homepage": "https://securesecrets.github.io/GalacticPoolsTestnetFrontend/",
 
 export default routes;

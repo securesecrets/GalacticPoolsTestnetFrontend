@@ -115,7 +115,7 @@ function DepositModall(props) {
       fetchBalance();
     }
 
-    if (inputBalance != 0) {
+    if (inputBalance !== 0) {
       SetIsDepositButtonEnabled(true);
     } else {
       SetIsDepositButtonEnabled(false);

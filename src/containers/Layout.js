@@ -1,5 +1,11 @@
 import React, { useContext, Suspense, useEffect, lazy } from "react";
-import { Switch, Route, Redirect, useLocation } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  Redirect,
+  useLocation,
+  BrowserRouter,
+} from "react-router-dom";
 import routes from "../routes";
 
 import Sidebar from "../components/Sidebar";
@@ -36,16 +42,12 @@ function Layout() {
                   <Route
                     key={i}
                     exact={true}
-                    path={`/GalacticPoolsTestnetFrontend/app${route.path}`}
+                    path={`/app${route.path}`}
                     render={(props) => <route.component {...props} />}
                   />
                 ) : null;
               })}
-              <Redirect
-                exact
-                from="/GalacticPoolsTestnetFrontend/app"
-                to="/GalacticPoolsTestnetFrontend/app/dashboard"
-              />
+              <Redirect exact from="/app" to="/app/dashboard" />
               <Route component={Page404} />
             </Switch>
           </Suspense>

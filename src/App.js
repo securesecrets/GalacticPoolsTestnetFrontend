@@ -12,13 +12,13 @@ const Layout = lazy(() => import("./containers/Layout"));
 function App() {
   return (
     <>
-      <Router>
+      <Router basename="/GalacticPoolsTestnetFrontend">
         <AccessibleNavigationAnnouncer />
         <Switch>
           {/* Place new routes over this */}
-          <Route path="/GalacticPoolsTestnetFrontend/app" component={Layout} />
+          <Route path="/app" component={Layout} />
           {/* If you have an index page, you can remothis Redirect */}
-          <Redirect exact from="/" to="/GalacticPoolsTestnetFrontend/app" />
+          <Redirect exact from="/" to="/app" />
         </Switch>
       </Router>
     </>

@@ -128,6 +128,7 @@ function UserView() {
     });
 
     if (delegated.amount != null) {
+      console.log(typeof delegated.amount);
       const balance = delegated.amount;
       setDelegated(balance);
     } else {

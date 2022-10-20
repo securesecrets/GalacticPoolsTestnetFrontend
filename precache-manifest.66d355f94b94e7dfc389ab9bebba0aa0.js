@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "e2e5d60061619ee0cb4583718695497c",
+    "revision": "683f54b62f490919c73fa3af3559a605",
     "url": "/GalacticPoolsTestnetFrontend/index.html"
   },
   {
-    "revision": "75cffbd1659d8e0e1e11",
+    "revision": "b385943eea94f39a0cc5",
     "url": "/GalacticPoolsTestnetFrontend/static/css/9.5ce1bf39.chunk.css"
   },
   {
@@ -136,20 +136,20 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/GalacticPoolsTestnetFrontend/static/js/8.47b0b058.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "75cffbd1659d8e0e1e11",
-    "url": "/GalacticPoolsTestnetFrontend/static/js/9.8aee7b3a.chunk.js"
+    "revision": "b385943eea94f39a0cc5",
+    "url": "/GalacticPoolsTestnetFrontend/static/js/9.03f857be.chunk.js"
   },
   {
     "revision": "4e0e34f265fae8f33b01b27ae29d9d6f",
-    "url": "/GalacticPoolsTestnetFrontend/static/js/9.8aee7b3a.chunk.js.LICENSE.txt"
+    "url": "/GalacticPoolsTestnetFrontend/static/js/9.03f857be.chunk.js.LICENSE.txt"
   },
   {
     "revision": "d81a286c9bae4a6f2df8",
     "url": "/GalacticPoolsTestnetFrontend/static/js/main.26ac6c82.chunk.js"
   },
   {
-    "revision": "34d92f02e58b7180e8a3",
-    "url": "/GalacticPoolsTestnetFrontend/static/js/runtime-main.3bfec71b.js"
+    "revision": "14f06705b0942ef89e98",
+    "url": "/GalacticPoolsTestnetFrontend/static/js/runtime-main.7605dbcf.js"
   },
   {
     "revision": "b9c73089fd14dcb97bf597665f575ac1",

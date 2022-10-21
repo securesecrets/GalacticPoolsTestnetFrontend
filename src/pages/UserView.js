@@ -32,7 +32,7 @@ function UserView() {
   const [isPermit, setisPermit] = useState(false);
   const [delegated, setDelegated] = useState(null);
   const [withdrawable, setWithdrawable] = useState(null);
-  const [unbondings, setUnbondings] = useState(null);
+  const [unbondings, setUnbondings] = useState([]);
   const [userInfo, setuserInfo] = useState(null);
 
   const [lotteryInfo, setLotteryInfo] = useState(null);
@@ -45,29 +45,41 @@ function UserView() {
     hours: "-",
     mins: "-",
   });
+  let [wallet, setWallet] = useState({ secretjs: null, address: null });
+
+  async function setupKeplrfun() {
+    const { secretjs, address } = await setupKeplr();
+    setWallet({ secretjs, address });
+  }
 
   useEffect(() => {
-    if (!isPermit) {
-      checkPermit();
+    if (wallet.secretjs == null || wallet.address == null) {
+      setupKeplrfun();
     }
-    if (timer.days == "-") {
-      fetchTimer();
+
+    if (wallet.secretjs != null || wallet.address != null) {
+      if (!isPermit) {
+        checkPermit();
+      }
+      if (timer.days == "-") {
+        fetchTimer();
+        fetchLotteryInfo();
+      }
     }
-  });
+  }, [wallet]);
 
   useEffect(() => {
     if (isPermit) {
       fetchDelegated();
       fetchUnbondings();
       fetchWithdrawable();
-      fetchLotteryInfo();
       fetchLiquidity();
       fetchUserWinningRecords();
     }
   }, [isPermit]);
 
   async function checkPermit() {
-    const { secretjs, address } = await setupKeplr();
+    const { secretjs, address } = wallet;
 
     let contract_address = process.env.REACT_APP_POOL_CONTRACT_ADDRESS;
 
@@ -81,7 +93,7 @@ function UserView() {
   }
 
   async function setPermit() {
-    const { secretjs, address } = await setupKeplr();
+    const { secretjs, address } = wallet;
 
     let contract_address = process.env.REACT_APP_POOL_CONTRACT_ADDRESS;
 
@@ -105,7 +117,7 @@ function UserView() {
   }
 
   async function fetchDelegated() {
-    const { secretjs, address } = await setupKeplr();
+    const { secretjs, address } = wallet;
 
     let contract_address = process.env.REACT_APP_POOL_CONTRACT_ADDRESS;
 
@@ -137,7 +149,7 @@ function UserView() {
   }
 
   async function fetchUnbondings() {
-    const { secretjs, address } = await setupKeplr();
+    const { secretjs, address } = wallet;
 
     let contract_address = process.env.REACT_APP_POOL_CONTRACT_ADDRESS;
 
@@ -192,7 +204,7 @@ function UserView() {
   }
 
   async function fetchLiquidity() {
-    const { secretjs, address } = await setupKeplr();
+    const { secretjs, address } = wallet;
 
     let contract_address = process.env.REACT_APP_POOL_CONTRACT_ADDRESS;
 
@@ -224,6 +236,7 @@ function UserView() {
         lottery_info: {},
       },
     });
+    setLotteryInfo(lottery_info);
 
     let current_liquidity = await secretjs.query.compute.queryContract({
       contractAddress: contract_address,
@@ -238,22 +251,7 @@ function UserView() {
       },
     });
 
-    console.log(current_liquidity);
-
     setLiquidity(current_liquidity);
-
-    let current_liq = await secretjs.query.compute.queryContract({
-      contractAddress: contract_address,
-      codeHash: process.env.REACT_APP_POOL_CONTRACT_HASH, // optional but way faster
-      query: {
-        with_permit: {
-          permit,
-          query: {
-            liquidity: { round_index: lottery_info.current_round_index - 1 },
-          },
-        },
-      },
-    });
 
     if (user_info.last_claim_rewards_round) {
       start = user_info.last_claim_rewards_round + 1;
@@ -290,11 +288,18 @@ function UserView() {
 
       unclaimed_round_info.push(liquidity);
     }
+
+    // let unclaimed_round = [];
+
+    // for (let i = 0; i < 20; i++) {
+    //   unclaimed_round.push({ round_index: i });
+    // }
+
     setUnclaimedRoundsLiq(unclaimed_round_info);
   }
 
   async function fetchUserStats() {
-    const { secretjs, address } = await setupKeplr();
+    const { secretjs, address } = wallet;
 
     let contract_address = process.env.REACT_APP_POOL_CONTRACT_ADDRESS;
 
@@ -339,7 +344,7 @@ function UserView() {
     setLiquidity(current_liquidity);
   }
   async function fetchWithdrawable() {
-    const { secretjs, address } = await setupKeplr();
+    const { secretjs, address } = wallet;
 
     let contract_address = process.env.REACT_APP_POOL_CONTRACT_ADDRESS;
 
@@ -365,7 +370,7 @@ function UserView() {
   }
 
   async function fetchLotteryInfo() {
-    const { secretjs, address } = await setupKeplr();
+    const { secretjs, address } = wallet;
 
     let contract_address = process.env.REACT_APP_POOL_CONTRACT_ADDRESS;
 
@@ -385,7 +390,7 @@ function UserView() {
   }
 
   async function fetchUserWinningRecords() {
-    const { secretjs, address } = await setupKeplr();
+    const { secretjs, address } = wallet;
 
     let contract_address = process.env.REACT_APP_POOL_CONTRACT_ADDRESS;
 
@@ -435,18 +440,17 @@ function UserView() {
           },
         });
         result_vec = result_vec.concat(rec.vec);
+        setWinningRecords(result_vec.reverse());
       }
-      setWinningRecords(result_vec.reverse());
-      console.log(result_vec);
+      // setWinningRecords(result_vec.reverse());
+      // console.log(result_vec);
     } else {
       setWinningRecords(records.vec.reverse());
     }
-
-    // console.log(records.vec);
   }
 
   async function claim_rewards() {
-    const { secretjs, address } = await setupKeplr();
+    const { secretjs, address } = wallet;
 
     let contractAddress = process.env.REACT_APP_POOL_CONTRACT_ADDRESS;
     let codeHash = process.env.REACT_APP_POOL_CONTRACT_HASH;
@@ -484,7 +488,7 @@ function UserView() {
   }
 
   async function fetchTimer() {
-    const { secretjs, address } = await setupKeplr();
+    const { secretjs, address } = wallet;
 
     let contract_address = process.env.REACT_APP_POOL_CONTRACT_ADDRESS;
 
@@ -552,6 +556,63 @@ function UserView() {
   async function claimRewardsCallback() {
     await fetchLiquidity();
   }
+
+  const [pageTable1, setPageTable1] = useState(1);
+  const [pageTable2, setPageTable2] = useState(1);
+  const [pageTable3, setPageTable3] = useState(1);
+
+  // pagination setup
+  const resultsPerPage = 5;
+
+  // setup data for every table
+  const [dataTable1, setDataTable1] = useState([]);
+  const [dataTable2, setDataTable2] = useState([]);
+  const [dataTable3, setDataTable3] = useState([]);
+
+  // pagination change control
+  function onPageChangeTable1(p) {
+    setPageTable1(p);
+  }
+
+  // pagination change control
+  function onPageChangeTable2(p) {
+    setPageTable2(p);
+  }
+
+  function onPageChangeTable3(p) {
+    setPageTable3(p);
+  }
+
+  // on page change, load new sliced data
+  // here you would make another server request for new data
+  useEffect(() => {
+    setDataTable1(
+      unclaimedRoundsLiq.slice(
+        (pageTable1 - 1) * resultsPerPage,
+        pageTable1 * resultsPerPage
+      )
+    );
+  }, [pageTable1, unclaimedRoundsLiq]);
+
+  // on page change, load new sliced data
+  // here you would make another server request for new data
+  useEffect(() => {
+    setDataTable2(
+      winningRecords.slice(
+        (pageTable2 - 1) * resultsPerPage,
+        pageTable2 * resultsPerPage
+      )
+    );
+  }, [pageTable2, winningRecords]);
+
+  useEffect(() => {
+    setDataTable3(
+      unbondings.slice(
+        (pageTable3 - 1) * resultsPerPage,
+        pageTable3 * resultsPerPage
+      )
+    );
+  }, [pageTable3, unbondings]);
 
   return (
     <div>
@@ -790,7 +851,7 @@ function UserView() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-primary2 items-center justify-center text-white">
-                  <TableCell>Round Index</TableCell>
+                  <TableCell>Round</TableCell>
                   <TableCell>Total Tickets</TableCell>
                   <TableCell>Tickets Used</TableCell>
                   <TableCell>Rewards Expired ?</TableCell>
@@ -800,7 +861,7 @@ function UserView() {
               </TableHeader>
               {unclaimedRoundsLiq ? (
                 <TableBody>
-                  {unclaimedRoundsLiq.map((value, index) => {
+                  {dataTable1.map((value, index) => {
                     return (
                       <TableRow key={index} className="bg-primary2">
                         <TableCell>
@@ -852,20 +913,14 @@ function UserView() {
                 <TableBody></TableBody>
               )}
             </Table>
-            {(unclaimedRoundsLiq ? unclaimedRoundsLiq.length : 0) > 5 ? (
-              <TableFooter>
-                <Pagination
-                  totalResults={
-                    unclaimedRoundsLiq ? unclaimedRoundsLiq.length : 0
-                  }
-                  resultsPerPage={5}
-                  onChange={() => {}}
-                  label="Table navigation"
-                />
-              </TableFooter>
-            ) : (
-              <div></div>
-            )}
+            <TableFooter>
+              <Pagination
+                totalResults={unclaimedRoundsLiq.length}
+                resultsPerPage={5}
+                onChange={onPageChangeTable1}
+                label="Table navigation"
+              />
+            </TableFooter>
           </TableContainer>
         </div>
       </div>
@@ -938,18 +993,14 @@ function UserView() {
                 <TableBody></TableBody>
               )}
             </Table>
-            {(unbondings ? unbondings.length : 0) >= 5 ? (
-              <TableFooter>
-                <Pagination
-                  totalResults={unbondings.length}
-                  resultsPerPage={5}
-                  onChange={() => {}}
-                  label="Table navigation"
-                />
-              </TableFooter>
-            ) : (
-              <div></div>
-            )}
+            <TableFooter>
+              <Pagination
+                totalResults={unbondings.length}
+                resultsPerPage={5}
+                onChange={onPageChangeTable2}
+                label="Table navigation"
+              />
+            </TableFooter>
           </TableContainer>
         </div>
       </div>
@@ -970,7 +1021,7 @@ function UserView() {
               </TableHeader>
               {winningRecords ? (
                 <TableBody>
-                  {winningRecords.map((value, index) => {
+                  {dataTable2.map((value, index) => {
                     return (
                       <TableRow key={index} className="bg-primary2">
                         <TableCell>
@@ -1003,18 +1054,14 @@ function UserView() {
                 <TableBody></TableBody>
               )}
             </Table>
-            {(winningRecords ? winningRecords.length : 0) > 5 ? (
-              <TableFooter>
-                <Pagination
-                  totalResults={winningRecords ? winningRecords.length : 0}
-                  resultsPerPage={5}
-                  onChange={() => {}}
-                  label="Table navigation"
-                />
-              </TableFooter>
-            ) : (
-              <div></div>
-            )}
+            <TableFooter>
+              <Pagination
+                totalResults={winningRecords ? winningRecords.length : 0}
+                resultsPerPage={5}
+                onChange={onPageChangeTable2}
+                label="Table navigation"
+              />
+            </TableFooter>
           </TableContainer>
         </div>
       </div>

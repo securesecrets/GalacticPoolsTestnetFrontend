@@ -4,6 +4,7 @@
   "description": "A multi theme, completely accessible, with components and pages examples, (almost) ready for production dashboard.",
   "homepage": "https://securesecrets.github.io/GalacticPoolsTestnetFrontend/",
   "private": false,
+
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
@@ -23,6 +24,7 @@
     "@testing-library/react": "9.5.0",
     "@testing-library/user-event": "7.2.1",
     "@windmill/react-ui": "0.3.1",
+    "axios": "^1.1.3",
     "chart.js": "2.9.3",
     "classnames": "2.2.6",
     "dotenv": "^10.0.0",
@@ -52,6 +54,7 @@
     "gh-pages": "^4.0.0",
     "postcss-cli": "^10.0.0",
     "react-axe": "3.5.2",
+    "react-error-overlay": "^6.0.9",
     "release-it": "13.6.4",
     "tailwindcss": "^3.2.0"
   },

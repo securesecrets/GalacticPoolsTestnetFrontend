@@ -2,7 +2,10 @@ import React, { lazy } from "react";
 
 import PageTitle from "../components/Typography/PageTitle";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+// import SponsorPools from "./SponsorPools";
 const UserPools = lazy(() => import("./UserPools"));
+const SponsorPools = lazy(() => import("./SponsorPools"));
+const AdminView = lazy(() => import("./AdminView"));
 
 class Pools extends React.Component {
   constructor(props) {
@@ -56,12 +59,12 @@ class Pools extends React.Component {
             </TabPanel>
             <TabPanel>
               <div className="text-sm text-gray-600 dark:text-gray-400">
-                SPONSOR
+                <SponsorPools />
               </div>
             </TabPanel>
             <TabPanel>
               <div className="text-sm text-gray-600 dark:text-gray-400">
-                ADMIN
+                <AdminView />
               </div>
             </TabPanel>
           </div>

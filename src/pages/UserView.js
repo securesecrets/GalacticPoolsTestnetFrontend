@@ -13,11 +13,10 @@ import {
   TableRow,
   TableCell,
   TableFooter,
-  Avatar,
   Pagination,
   Badge,
 } from "@windmill/react-ui";
-import { TxResponse } from "secretjs/dist/protobuf_stuff/cosmos/base/abci/v1beta1/abci.js";
+import WinningRecordModal from "../modals/WinningRecordModal.js";
 const DepositModal = lazy(() => import("../modals/DepositModal"));
 const UnbondingModal = lazy(() => import("../modals/UnbondingModal"));
 const WithdrawableModal = lazy(() => import("../modals/WithdrawableModal"));
@@ -27,6 +26,8 @@ function UserView() {
     useModal();
   const { isShowing: isUnbondModalShowing, toggle: unbondToggle } = useModal();
   const { isShowing: isWithdrawModalShowing, toggle: withdrawToggle } =
+    useModal();
+  const { isShowing: isWinningRecordsShowing, toggle: winningRecordsToggle } =
     useModal();
 
   const [isPermit, setisPermit] = useState(false);
@@ -39,6 +40,7 @@ function UserView() {
   const [liquidity, setLiquidity] = useState(null);
   const [unclaimedRoundsLiq, setUnclaimedRoundsLiq] = useState([]);
   const [winningRecords, setWinningRecords] = useState([]);
+  const [selectedWinningRecord, setSelectedWinningRecord] = useState(null);
 
   const [timer, setTimer] = useState({
     days: "-",
@@ -61,7 +63,7 @@ function UserView() {
       if (!isPermit) {
         checkPermit();
       }
-      if (timer.days == "-") {
+      if (timer.days === "-") {
         fetchTimer();
         fetchLotteryInfo();
       }
@@ -140,7 +142,6 @@ function UserView() {
     });
 
     if (delegated.amount != null) {
-      console.log(typeof delegated.amount);
       const balance = delegated.amount;
       setDelegated(balance);
     } else {
@@ -233,7 +234,7 @@ function UserView() {
       contractAddress: contract_address,
       codeHash: process.env.REACT_APP_POOL_CONTRACT_HASH, // optional but way faster
       query: {
-        lottery_info: {},
+        round: {},
       },
     });
     setLotteryInfo(lottery_info);
@@ -325,7 +326,7 @@ function UserView() {
       contractAddress: contract_address,
       codeHash: process.env.REACT_APP_POOL_CONTRACT_HASH, // optional but way faster
       query: {
-        lottery_info: {},
+        round: {},
       },
     });
 
@@ -383,9 +384,10 @@ function UserView() {
       contractAddress: contract_address,
       codeHash: process.env.REACT_APP_POOL_CONTRACT_HASH, // optional but way faster
       query: {
-        lottery_info: {},
+        round: {},
       },
     });
+
     setLotteryInfo(lottery_info);
   }
 
@@ -442,8 +444,8 @@ function UserView() {
         result_vec = result_vec.concat(rec.vec);
         setWinningRecords(result_vec.reverse());
       }
+
       // setWinningRecords(result_vec.reverse());
-      // console.log(result_vec);
     } else {
       setWinningRecords(records.vec.reverse());
     }
@@ -454,6 +456,8 @@ function UserView() {
 
     let contractAddress = process.env.REACT_APP_POOL_CONTRACT_ADDRESS;
     let codeHash = process.env.REACT_APP_POOL_CONTRACT_HASH;
+
+    // let gasLimit =
 
     try {
       const tx = await secretjs.tx.compute.executeContract(
@@ -466,7 +470,7 @@ function UserView() {
           },
         },
         {
-          gasLimit: 240297,
+          gasLimit: 4240297,
         }
       );
 
@@ -497,7 +501,7 @@ function UserView() {
       contractAddress: contract_address,
       codeHash: process.env.REACT_APP_POOL_CONTRACT_HASH, // optional but way faster
       query: {
-        lottery_info: {},
+        round: {},
       },
     });
 
@@ -555,6 +559,12 @@ function UserView() {
 
   async function claimRewardsCallback() {
     await fetchLiquidity();
+    await fetchUserWinningRecords();
+  }
+
+  function winningRecordsCallback(record) {
+    winningRecordsToggle();
+    setSelectedWinningRecord(record);
   }
 
   const [pageTable1, setPageTable1] = useState(1);
@@ -708,6 +718,7 @@ function UserView() {
                     hide={withdrawToggle}
                     callback={withdrawCallback}
                     withdrawable={withdrawable}
+                    type={"user"}
                   />
                 </div>
                 <div className="btn account_reduce_stakes_withdraw_button   m-1">
@@ -725,6 +736,7 @@ function UserView() {
                     hide={unbondToggle}
                     callback={unbondingCallback}
                     delegated={delegated}
+                    type={"user"}
                   />
                 </div>
                 <div className="btn account_reduce_stakes_withdraw_button   m-1">
@@ -775,7 +787,7 @@ function UserView() {
                 <TableCell>
                   <span className="text-sm justify-self-end">
                     {lotteryInfo
-                      ? (lotteryInfo.price_per_ticket / 1e6).toFixed(2)
+                      ? (lotteryInfo.ticket_price / 1e6).toFixed(2)
                       : 0}{" "}
                     SCRT
                   </span>
@@ -1034,21 +1046,33 @@ function UserView() {
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm">
-                            {(value.liquidity / 1e6).toFixed(2)}
-                          </span>
+                          <span className="text-sm">{value.tickets}</span>
                         </TableCell>
                         <TableCell>
                           <span className="text-sm">
-                            {(value.liquidity / 1e6).toFixed(2)} SCRT
+                            {(value.ticket_price / 1e6).toFixed(2)} SCRT
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm">Details</span>
+                          <Button
+                            className="btn account_reduce_stakes_withdraw_button  self-center"
+                            onClick={() =>
+                              winningRecordsCallback(value.rewards_per_tier)
+                            }
+                          >
+                            Details
+                          </Button>
                         </TableCell>
                       </TableRow>
                     );
                   })}
+                  {isWinningRecordsShowing ? (
+                    <WinningRecordModal
+                      isShowing={isWinningRecordsShowing}
+                      hide={winningRecordsToggle}
+                      rewardsPerTier={selectedWinningRecord}
+                    />
+                  ) : null}
                 </TableBody>
               ) : (
                 <TableBody></TableBody>

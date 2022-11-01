@@ -124,7 +124,7 @@ function DepositModall(props) {
     if (inputBalance * 1e6 > balance) {
       SetIsDepositButtonEnabled(false);
     }
-  }, [wallet, inputBalance]);
+  }, [wallet, inputBalance, balance, fetchBalance]);
 
   async function onInputchange(e) {
     setinputBalance(e.target.value);
@@ -173,7 +173,7 @@ function DepositModall(props) {
                     <div className="d-flex align-items-center m-1">
                       <img
                         src={logo}
-                        alt="LOGO Image"
+                        alt="LOGO "
                         className="img-fluid mini-logo-size"
                       />
                     </div>

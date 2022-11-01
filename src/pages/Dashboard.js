@@ -1,90 +1,58 @@
-import React, { useState, useEffect } from 'react'
+import React from "react";
 
-import CTA from '../components/CTA'
-import InfoCard from '../components/Cards/InfoCard'
-import ChartCard from '../components/Chart/ChartCard'
-import { Doughnut, Line } from 'react-chartjs-2'
-import ChartLegend from '../components/Chart/ChartLegend'
-import PageTitle from '../components/Typography/PageTitle'
-import { ChatIcon, CartIcon, MoneyIcon, PeopleIcon } from '../icons'
-import RoundIcon from '../components/RoundIcon'
-import response from '../utils/demo/tableData'
-import {
-  TableBody,
-  TableContainer,
-  Table,
-  TableHeader,
-  TableCell,
-  TableRow,
-  TableFooter,
-  Avatar,
-  Badge,
-  Pagination
-} from '@windmill/react-ui'
+import InfoCard from "../components/Cards/InfoCard";
+import ChartCard from "../components/Chart/ChartCard";
+import { Doughnut, Line } from "react-chartjs-2";
+import ChartLegend from "../components/Chart/ChartLegend";
+import PageTitle from "../components/Typography/PageTitle";
+import { MoneyIcon } from "../icons";
+import RoundIcon from "../components/RoundIcon";
 
 import {
   doughnutOptions,
   lineOptions,
   doughnutLegends,
-  lineLegends
-} from '../utils/demo/chartsData'
+  lineLegends,
+} from "../utils/demo/chartsData";
 
-function Dashboard () {
-  const [page, setPage] = useState(1)
-  const [data, setData] = useState([])
-
-  // pagination setup
-  const resultsPerPage = 10
-  const totalResults = response.length
-
-  // pagination change control
-  function onPageChange (p) {
-    setPage(p)
-  }
-
-  // on page change, load new sliced data
-  // here you would make another server request for new data
-  useEffect(() => {
-    setData(response.slice((page - 1) * resultsPerPage, page * resultsPerPage))
-  }, [page])
-
+function Dashboard() {
   return (
     <>
       <PageTitle>Dashboard</PageTitle>
 
       {/* <!-- Cards --> */}
-      <div className='grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4'>
-        <InfoCard title='Total Delegated($)' value='$1 million'>
+      <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
+        <InfoCard title="Total Delegated($)" value="$1 million">
           <RoundIcon
             icon={MoneyIcon}
-            iconColorClass='text-orange-500 dark:text-orange-100'
-            bgColorClass='bg-orange-100 dark:bg-orange-500'
-            className='mr-4'
+            iconColorClass="text-orange-500 dark:text-orange-100"
+            bgColorClass="bg-orange-100 dark:bg-orange-500"
+            className="mr-4"
           />
         </InfoCard>
-        <InfoCard title='Pools' value='3'>
+        <InfoCard title="Pools" value="3">
           <RoundIcon
             icon={MoneyIcon}
-            iconColorClass='text-green-500 dark:text-green-100'
-            bgColorClass='bg-green-100 dark:bg-green-500'
-            className='mr-4'
+            iconColorClass="text-green-500 dark:text-green-100"
+            bgColorClass="bg-green-100 dark:bg-green-500"
+            className="mr-4"
           />
         </InfoCard>
-        <InfoCard title='Total Prizes till this date ' value='$5 million'>
+        <InfoCard title="Total Prizes till this date " value="$5 million">
           <RoundIcon
             icon={MoneyIcon}
-            iconColorClass='text-blue-500 dark:text-blue-100'
-            bgColorClass='bg-blue-100 dark:bg-blue-500'
-            className='mr-4'
+            iconColorClass="text-blue-500 dark:text-blue-100"
+            bgColorClass="bg-blue-100 dark:bg-blue-500"
+            className="mr-4"
           />
         </InfoCard>
 
-        <InfoCard title='Total Prizes this week' value='$50,000'>
+        <InfoCard title="Total Prizes this week" value="$50,000">
           <RoundIcon
             icon={MoneyIcon}
-            iconColorClass='text-blue-500 dark:text-blue-100'
-            bgColorClass='bg-purple-100 dark:bg-purple-500'
-            className='mr-4'
+            iconColorClass="text-blue-500 dark:text-blue-100"
+            bgColorClass="bg-purple-100 dark:bg-purple-500"
+            className="mr-4"
           />
         </InfoCard>
       </div>
@@ -143,19 +111,19 @@ function Dashboard () {
       </TableContainer> */}
 
       <PageTitle>Charts</PageTitle>
-      <div className='grid gap-6 mb-8 md:grid-cols-2'>
-        <ChartCard title='Pool shares'>
+      <div className="grid gap-6 mb-8 md:grid-cols-2">
+        <ChartCard title="Pool shares">
           <Doughnut {...doughnutOptions} />
           <ChartLegend legends={doughnutLegends} />
         </ChartCard>
 
-        <ChartCard title='Traffic'>
+        <ChartCard title="Traffic">
           <Line {...lineOptions} />
           <ChartLegend legends={lineLegends} />
         </ChartCard>
       </div>
     </>
-  )
+  );
 }
 
-export default Dashboard
+export default Dashboard;

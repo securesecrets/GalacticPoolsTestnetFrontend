@@ -38,7 +38,7 @@ function UnbondingModal(props) {
     setWallet({ secretjs, address });
   }
 
-  async function withdraw() {
+  async function withdraw(type) {
     setIsUnbonding(true);
     // To create a readonly secret.js client, just pass in a gRPC-web endpoint
     const { secretjs, address } = wallet;
@@ -46,24 +46,37 @@ function UnbondingModal(props) {
     let amount = String(parseInt(inputBalance * 1e6));
     let contractAddress = process.env.REACT_APP_POOL_CONTRACT_ADDRESS;
     let codeHash = process.env.REACT_APP_POOL_CONTRACT_HASH;
-
+    let message_type;
     try {
+      if (type === "user") {
+        message_type = {
+          withdraw: {
+            amount: amount,
+            wrapping_enabled: false,
+          },
+        };
+      }
+      if (type === "sponsor") {
+        message_type = {
+          sponsor_withdraw: {
+            amount: amount,
+            wrapping_enabled: false,
+          },
+        };
+      }
+
       const tx = await secretjs.tx.compute.executeContract(
         {
           sender: address,
           contractAddress: contractAddress,
           codeHash: codeHash, // optional but way faster
-          msg: {
-            withdraw: {
-              amount: amount,
-              wrapping_enabled: false,
-            },
-          },
+          msg: message_type,
         },
         {
           gasLimit: 240297,
         }
       );
+      console.log(tx);
 
       Notifications(
         "success",
@@ -104,7 +117,7 @@ function UnbondingModal(props) {
     setIsUnbonding(false);
   }
 
-  const UM = ({ isShowing, hide }) =>
+  const UM = ({ isShowing, hide, type }) =>
     isShowing
       ? ReactDOM.createPortal(
           <React.Fragment>
@@ -213,7 +226,7 @@ function UnbondingModal(props) {
                 <div className="btn    ">
                   <Button
                     className="btn account_deposit_button text-white self-center"
-                    onClick={() => withdraw()}
+                    onClick={() => withdraw(type)}
                     disabled={!isUnbondButtonEnabled}
                   >
                     {isUnbonding ? (
@@ -231,7 +244,7 @@ function UnbondingModal(props) {
           document.body
         )
       : null;
-  return <UM isShowing={props.isShowing} hide={props.hide} />;
+  return <UM isShowing={props.isShowing} hide={props.hide} type={props.type} />;
 }
 
 export default UnbondingModal;

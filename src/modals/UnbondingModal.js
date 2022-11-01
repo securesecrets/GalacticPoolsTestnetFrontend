@@ -38,7 +38,7 @@ function UnbondingModal(props) {
     setWallet({ secretjs, address });
   }
 
-  async function unbond() {
+  async function unbond(type) {
     setIsUnbonding(true);
     // To create a readonly secret.js client, just pass in a gRPC-web endpoint
     const { secretjs, address } = wallet;
@@ -48,14 +48,23 @@ function UnbondingModal(props) {
     let codeHash = process.env.REACT_APP_POOL_CONTRACT_HASH;
 
     try {
+      let message_type;
+      if (type === "user") {
+        message_type = {
+          request_withdraw: { amount: amount },
+        };
+      }
+      if (type === "sponsor") {
+        message_type = {
+          sponsor_request_withdraw: { amount: amount },
+        };
+      }
       const tx = await secretjs.tx.compute.executeContract(
         {
           sender: address,
           contractAddress: contractAddress,
           codeHash: codeHash, // optional but way faster
-          msg: {
-            request_withdraw: { amount: amount },
-          },
+          msg: message_type,
         },
         {
           gasLimit: 240297,
@@ -103,7 +112,7 @@ function UnbondingModal(props) {
     setIsUnbonding(false);
   }
 
-  const UM = ({ isShowing, hide }) =>
+  const UM = ({ isShowing, hide, type }) =>
     isShowing
       ? ReactDOM.createPortal(
           <React.Fragment>
@@ -236,7 +245,7 @@ function UnbondingModal(props) {
                 <div className="btn    ">
                   <Button
                     className="btn account_deposit_button text-white self-center"
-                    onClick={() => unbond()}
+                    onClick={() => unbond(type)}
                     disabled={!isUnbondButtonEnabled}
                   >
                     {isUnbonding ? (
@@ -254,7 +263,7 @@ function UnbondingModal(props) {
           document.body
         )
       : null;
-  return <UM isShowing={props.isShowing} hide={props.hide} />;
+  return <UM isShowing={props.isShowing} hide={props.hide} type={props.type} />;
 }
 
 export default UnbondingModal;

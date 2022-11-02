@@ -136,7 +136,7 @@ function AdminView() {
   return (
     <div>
       <div>
-        <div className="Panel">
+        <div className="Panel mt-8">
           <TableContainer className="mb-8">
             <Table>
               <TableHeader>
@@ -218,7 +218,9 @@ function AdminView() {
               />
             </TableFooter>
           </TableContainer>
-          <button onClick={() => SendTxn()}>Send txn</button>
+          <div className="flex justify-end pr-3">
+            <Button onClick={() => SendTxn()}>Send txn</Button>
+          </div>
         </div>
       </div>
     </div>

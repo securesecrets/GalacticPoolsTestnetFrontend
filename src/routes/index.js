@@ -11,6 +11,9 @@ const Dashboard = lazy(() => import("../pages/Dashboard"));
 const Page404 = lazy(() => import("../pages/404"));
 const Blank = lazy(() => import("../pages/Blank"));
 const Pool = lazy(() => import("../pages/Pools"));
+const UserView = lazy(() => import("../pages/UserPools"));
+const SponsorView = lazy(() => import("../pages/SponsorPools"));
+const AdminView = lazy(() => import("../pages/AdminView"));
 
 /**
  * ⚠ These are internal routes!
@@ -36,21 +39,21 @@ const routes = [
     component: Blank,
   },
   {
-    path: "/pools",
-    component: Pool,
+    path: "/user-view",
+    component: UserView,
   },
-  // {
-  //   path: '/forms',
-  //   component: Forms,
-  // },
+  {
+    path: "/sponsor-view",
+    component: SponsorView,
+  },
   // {
   //   path: "/cards",
   //   component: Cards,
   // },
-  // {
-  //   path: '/charts',
-  //   component: Charts,
-  // },
+  {
+    path: "/admin-view",
+    component: AdminView,
+  },
   // {
   //   path: '/buttons',
   //   component: Buttons,

@@ -42,12 +42,31 @@ const routes = [
   //   icon: 'TablesIcon',
   //   name: 'Tables',
   // },
+  // {
+  //   icon: "PagesIcon",
+  //   name: "Pools",
+  //   // submenu
+
+  //   path: `/app/pools`, // the url
+  // },
   {
     icon: "PagesIcon",
     name: "Pools",
-    // submenu
-
-    path: `/app/pools`, // the url
+    routes: [
+      // submenu
+      {
+        path: "/app/user-view",
+        name: "User View",
+      },
+      {
+        path: "/app/sponsor-view",
+        name: "Sponsor View",
+      },
+      {
+        path: "/app/admin-view",
+        name: "Admin View",
+      },
+    ],
   },
 ];
 // "homepage": "https://securesecrets.github.io/GalacticPoolsTestnetFrontend/",

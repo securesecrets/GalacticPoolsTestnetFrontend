@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/GalacticPoolsTestnetFrontend/precache-manifest.76b169d162c11ba5c44df7d66437aad1.js"
+  "/GalacticPoolsTestnetFrontend/precache-manifest.e189cdc313b30c7ac1a7caef298a5a46.js"
 );
 
 self.addEventListener('message', (event) => {
